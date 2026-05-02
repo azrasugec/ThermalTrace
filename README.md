@@ -100,7 +100,7 @@ The hot and cold anchor objects — initially appearing as the **problem** — a
 
 ### Pipeline Overview
 
-![pipeline](outputs/9_pipeline_result.png)
+![pipeline](outputs/pipeline_result.png)
 
 **(a)** Raw frame with hot (red ★) and cold (blue ★) anchor markers
 **(b)** Anchor drift across 100 frames — each dot is one frame, showing UAV movement
@@ -113,7 +113,7 @@ The hot and cold anchor objects — initially appearing as the **problem** — a
 
 ### Naive vs Proposed Method
 
-![comparison](outputs/10_naive_vs_advanced.png)
+![comparison](outputs/naive_vs_advanced.png)
 
 Without registration, averaging 100 frames just blurs the scene. The proposed method corrects UAV drift first, then stacks — revealing the target clearly.
 
@@ -121,7 +121,7 @@ Without registration, averaging 100 frames just blurs the scene. The proposed me
 
 ### Histogram Evolution
 
-![histogram](outputs/6_histogram_projection.png)
+![histogram](outputs/6.png)
 
 **Left:** After median stacking — only 29 of 256 gray level bins are occupied.
 **Right:** After Histogram Projection — all 29 bins are stretched across the full 0–255 range.
@@ -235,7 +235,7 @@ OUTPUT_DIR = r'path/to/outputs/'
 2. Run:
 
 ```bash
-python AzraSugec_2220674062_solution.py
+python ThermalTrace.py
 ```
 
 All output images are saved to `OUTPUT_DIR`.
