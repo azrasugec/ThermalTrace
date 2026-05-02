@@ -92,7 +92,7 @@ The hot and cold anchor objects — initially appearing as the **problem** — a
 ### Before & After
 | Raw Frame | Final Result |
 |-----------|-------------|
-| ![raw](outputs/1_raw_frame.png) | ![result](outputs/final_result.png) |
+| ![raw](outputs/raw.png) | ![result](outputs/final_result.png) |
 
 > The target object is completely invisible in the raw frame. After processing, a Y-shaped thermal structure is clearly revealed.
 
