@@ -86,6 +86,104 @@ The hot and cold anchor objects — initially appearing as the **problem** — a
 
 ---
 
+
+## Visual Results
+
+### Before & After
+| Raw Frame | Final Result |
+|-----------|-------------|
+| ![raw](outputs/1_raw_frame.png) | ![result](outputs/final_result.png) |
+
+> The target object is completely invisible in the raw frame. After processing, a Y-shaped thermal structure is clearly revealed.
+
+---
+
+### Pipeline Overview
+
+![pipeline](outputs/9_pipeline_result.png)
+
+**(a)** Raw frame with hot (red ★) and cold (blue ★) anchor markers
+**(b)** Anchor drift across 100 frames — each dot is one frame, showing UAV movement
+**(c)** After registration + median stack — Y-shape emerges from noise
+**(d)** After Histogram Projection — full contrast range utilized
+**(e)** After CLAHE — target clearly visible (green circle)
+**(f)** Background-subtracted anomaly map — red = warm, blue = cold
+
+---
+
+### Naive vs Proposed Method
+
+![comparison](outputs/10_naive_vs_advanced.png)
+
+Without registration, averaging 100 frames just blurs the scene. The proposed method corrects UAV drift first, then stacks — revealing the target clearly.
+
+---
+
+### Histogram Evolution
+
+![histogram](outputs/6_histogram_projection.png)
+
+**Left:** After median stacking — only 29 of 256 gray level bins are occupied.
+**Right:** After Histogram Projection — all 29 bins are stretched across the full 0–255 range.
+
+---
+
+## Methods Explained
+
+### 1. Anchor-Based Registration
+The hot and cold objects are physically stationary on the ground. Even though they appear at different pixel locations in each frame (due to UAV movement), they can be used as **natural fiducial markers**.
+
+For each frame *i*, we detect the hot anchor position *(rᵢ, cᵢ)* and compute the required shift to align it with the reference frame:
+
+```
+Δy = r₀ - rᵢ
+Δx = c₀ - cᵢ
+```
+
+This corrects the UAV drift exactly, so all 100 frames look at the same ground location from the same reference point.
+
+---
+
+### 2. Temporal Median Stacking
+After alignment, we compute the pixel-wise **median** across all 100 frames.
+
+- Random thermal noise → different value each frame → **cancels out**
+- The target → same location every frame → **survives**
+- SNR improvement: **√100 = 10×**
+
+The median is preferred over the mean because it is robust to outlier pixels (residual anchor artifacts).
+
+---
+
+### 3. Histogram Projection
+*(Zhang et al., 2014)*
+
+The stacked image uses only 29 of 256 possible gray levels — 227 bins are completely empty. Standard histogram equalization would redistribute pixel frequencies and distort the image. Histogram Projection instead:
+
+1. Builds a binary occupancy map: `H(i) = 1` if any pixel has value `i`, else `0`
+2. Spreads the occupied levels **uniformly** across 0–255
+3. Empty bins are eliminated — relative ordering is preserved
+
+```
+dₖ = floor( 255 × Σ H(i) / S )
+```
+where S = total number of occupied bins.
+
+---
+
+### 4. CLAHE
+*(Pizer et al., 1987)*
+
+Contrast Limited Adaptive Histogram Equalization enhances **local** contrast by:
+- Dividing the image into small 8×8 pixel tiles
+- Applying histogram equalization **independently** within each tile
+- Using a **clip limit** (3.0) to prevent noise amplification in flat regions
+- Blending tile boundaries with bilinear interpolation
+
+This makes the Y-shaped target — which has only subtle thermal contrast — clearly distinguishable from the background.
+
+---
+
 ## Results
 
 | Metric | Raw Frame | After Processing |
@@ -143,6 +241,7 @@ python AzraSugec_2220674062_solution.py
 All output images are saved to `OUTPUT_DIR`.
 
 ---
+
 
 ## Project Structure
 
