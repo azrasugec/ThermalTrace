@@ -148,9 +148,9 @@ All output images are saved to `OUTPUT_DIR`.
 
 ```
 📁 project/
-  ├── AzraSugec_2220674062_solution.py   ← main script
+  ├── thermaltrace.ipynb   ← main script
   ├── README.md
-  ├── 📁 2220674062/                     ← input images
+  ├── 📁 img/                     ← input images
   │     ├── thermal_image_1.png
   │     ├── thermal_image_2.png
   │     └── ... (100 files)
